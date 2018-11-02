@@ -1,0 +1,6 @@
+﻿CREATE TABLE [FS].[WatchedFile]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY, 
+    [Path] VARCHAR(MAX) NOT NULL, 
+    [Deleted] NCHAR(10) NOT NULL
+)
