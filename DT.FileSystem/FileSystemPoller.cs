@@ -13,7 +13,7 @@ namespace DT.FileSystem
 
 		public static FileSystemPoller Instance { get; private set; }
 
-		public string ExcludeFolder { get; set; }
+		//public string ExcludeFolder { get; set; }
 
 		public string WatchFolder { get; set; }
 
@@ -44,7 +44,7 @@ namespace DT.FileSystem
 
 			this._timer.Elapsed += EnumerateFileSystemChanges;
 
-			this._fileList = _context.GetAll().Select(w => w.Path).ToList();
+			this._fileList = _context.GetAll().Where(wf => !wf.Deleted).Select(w => w.Path).ToList();
 			if (!this._fileList.Any())
 				this._firstRun = true;
 		}
@@ -61,7 +61,7 @@ namespace DT.FileSystem
 			this._lastChecked = DateTime.Now;
 			try
 			{
-				var files = GetAllDirectoriesFileList();
+				var files = GetAllFilesList();
 
 				var previousFileList = new List<string>(this._fileList);
 
@@ -113,14 +113,14 @@ namespace DT.FileSystem
 			}
 		}
 
-		private IEnumerable<string> GetAllDirectoriesFileList()
+		private IEnumerable<string> GetAllFilesList()
 		{
 			IEnumerable<string> contents =
-				Directory.GetDirectories(this.WatchFolder, "*",
+				Directory.GetFiles(this.WatchFolder, "*",
 					SearchOption.TopDirectoryOnly);
 
-			if (!string.IsNullOrEmpty(this.ExcludeFolder))
-				contents = contents.Where(d => d != this.ExcludeFolder);
+			//if (!string.IsNullOrEmpty(this.ExcludeFile))
+			//	contents = contents.Where(d => d != this.ExcludeFile);
 
 			return contents;
 		}
